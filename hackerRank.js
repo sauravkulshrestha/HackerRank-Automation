@@ -47,7 +47,26 @@ browserOPenPromise // fulfill
 })
 .then(function () {
     console.log("Algo page is opened");
+    let allquerypromise = curTab.waitForSelector('a[data-analytics="ChallengeListChallengeName"]');
+    return allquerypromise;
 })
+.then(function () {
+    function getAllQUesLink() {
+        let allElemArr = document.querySelectorAll('a[data-analytics="ChallengeListChallengeName"]');
+        let linkArr = [];
+        for (let i = 0; i < allElemArr.length; i++) {
+           linkArr.push(allElemArr[i].getAttribute("href"));
+            
+        }
+        return linkArr;
+    }
+    let linkArrayPromise = curTab.evaluate(getAllQUesLink);
+    return linkArrayPromise;
+})
+.then(function (linkArr) {
+    console.log(linkArr);
+})
+
 .catch(function (err) {
     console.log(err);
 });
@@ -56,12 +75,13 @@ function WaitnClick(algoBtn) {
         let waitforselectorpromise = curTab.waitForSelector(algoBtn);
         waitforselectorpromise
         .then(function () {
-            console.log("ALog btn found");
+            console.log("Algo btn found");
             let AlgobtnClickPromise = curTab.click(algoBtn);
             return AlgobtnClickPromise;
         })
         .then(function () {
             console.log("Algo btn clicked");
+            resolve();
         })
         .catch(function (err) {
             console.log(err);
